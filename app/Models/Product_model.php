@@ -36,5 +36,10 @@ class Product_model extends Model
         return $this->db->table($this->table)->delete(['product_id' => $id]);
     } 
 
+    public function getPrice($id)
+    {
+        return $this->db->table($this->table)->getWhere(['product_id' => $id])->getRowArray();
+    }
+
 }
 ?>
