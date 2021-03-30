@@ -1,3 +1,7 @@
+user : admin@example.com
+pass : admin123
+
+
 # CodeIgniter 4 Framework
 
 ## What is CodeIgniter?
