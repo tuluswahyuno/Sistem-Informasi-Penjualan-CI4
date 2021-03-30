@@ -6,11 +6,16 @@ class Dashboard extends BaseController
 {
     public function __construct()
     {
+        $this->cek_login();
         $this->dashboard_model = new Dashboard_model();
     }
      
     public function index()
     {
+        if($this->cek_login() == FALSE){
+            session()->setFlashdata('error_login', 'Silahkan login terlebih dahulu untuk mengakses data');
+            return redirect()->to('/auth/login');
+        }
         $data['total_transaction']  = $this->dashboard_model->getCountTrx();
         $data['total_product']      = $this->dashboard_model->getCountProduct();
         $data['total_category']     = $this->dashboard_model->getCountCategory();
