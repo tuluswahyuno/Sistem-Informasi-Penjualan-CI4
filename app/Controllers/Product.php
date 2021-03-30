@@ -17,7 +17,35 @@ class Product extends Controller
  
     public function index()
     {
-        $data['products'] = $this->product_model->getProduct();
+        $category           = $this->request->getGet('category');
+        $keyword            = $this->request->getGet('keyword');
+    
+        $data['category']   = $category;
+        $data['keyword']    = $keyword;
+    
+        $categories         = $this->category_model->where('category_status', 'Active')->findAll();
+        $data['categories'] = ['' => 'Pilih Category'] + array_column($categories, 'category_name', 'category_id');
+    
+        // filter
+        $where      = [];
+        $like       = [];
+        $or_like    = [];
+    
+        if(!empty($category)){
+            $where = ['products.category_id' => $category];
+        }
+    
+        if(!empty($keyword)){
+            $like   = ['products.product_name' => $keyword];
+            $or_like   = ['products.product_sku' => $keyword, 'products.product_description' => $keyword];
+        }
+        // end filter
+    
+        // paginate
+        $paginate = 5;
+        $data['products']   = $this->product_model->join('categories', 'categories.category_id = products.category_id')->where($where)->like($like)->orLike($or_like)->paginate($paginate, 'product');
+        $data['pager']      = $this->product_model->pager;
+    
         echo view('product/index', $data);
     }
 
